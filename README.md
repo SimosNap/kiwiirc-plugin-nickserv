@@ -1,15 +1,24 @@
-# KiwiIRC -  Plugin
+# KiwiIRC -  Nickserv Plugin
 
-This is a basic plugin template for Kiwi IRC. 
+This is a NickServ plugin for KiwiIRC 
 
-Just create a plugins folder in /static if you don't already have one.
-Then download this plugin into that directory.
+Dependencies
+
+node (https://nodejs.org/)
+yarn (https://yarnpkg.com/)
+
+Building the source
+
+$ yarn
+$ yarn build
+
+The plugin will then be built into dist/plugin-nickserv.js
+
+Just create a plugins folder in /static if you don't already have one
+than add this plugin into that directory.
+
 Finally, edit your config.json file like so:
 
     "plugins": [
-      {"name": "plugintemplate", "url": "./static/plugins/plugin-template/plugin.js"}
+      {"name": "nickserv", "url": "./static/plugins/plugin-nickserv.js"}
     ]
-  
-  
-
-Questions? scott@londontrustmedia.com
