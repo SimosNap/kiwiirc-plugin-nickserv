@@ -1,0 +1,108 @@
+.kiwi-statebrowser-register {
+    position: absolute;
+    top: 0;
+    left: 32px;
+    width: auto;
+    text-align: left;
+    padding: 0 10px;
+    font-size: 1em;
+    box-sizing: border-box;
+    line-height: 35px;
+    cursor: pointer;
+    font-weight: 500;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+    border-radius: 0 0 6px 0;
+    opacity: 0.8;
+}
+
+.kiwi-statebrowser-register:hover {
+    opacity: 1;
+}
+
+.kiwi-statebrowser-register span {
+    font-weight: 600;
+}
+
+.kiwi-statebrowser-register i {
+    float: right;
+    line-height: 35px;
+    font-size: 1.2em;
+}
+
+#nickserv-form .kiwi-sky-simple-error {
+    width:468px;
+    margin:0 auto;
+    margin-bottom:10px;
+    text-align:left;
+
+}
+.kiwi-ns-login {
+    font-size:1.0em;
+}
+
+.kiwi-ns-login:before {
+    font-family:FontAwesome;
+    content: "\f090" ;
+    margin-right:5px;
+}
+
+
+.kiwi-ns-register {
+    font-size:1.0em;
+}
+
+.kiwi-ns-register:before {
+    font-family:FontAwesome;
+    content: "\f023" ;
+    margin-right:5px;
+}
+
+.kiwi-ns-error {
+    font-size:1.0em;
+}
+
+.kiwi-ns-error:before {
+    font-family:FontAwesome;
+    content: "\f071" ;
+    margin-right:5px;
+}
+.kiwi-ns-input {
+    border-top:1px solid rgba(0, 0, 0, 0.2) !important;
+    padding:10px !important;
+    width:468px !important;
+    margin:0 auto;
+}
+#nickserv-form .input-text-underline {
+    width:468px;
+    margin:0 auto;
+}
+.kiwi-ns-button {
+    font-size:1.2em;border-radius:0px;
+    margin-top:10px;
+    margin-bottom:10px;
+    letter-spacing: 2px;
+    padding: .5em 1em;
+}
+
+.kiwi-ns-button:before {
+    font-family:FontAwesome;
+    content: "\f023" ;
+    margin-right:5px;
+}
+
+@media screen and (max-width: 468px) {
+
+    #nickserv-form .kiwi-sky-simple-error {
+        width:100%;
+    }
+
+    .kiwi-ns-input {
+        width:100%;
+    }
+
+    #nickserv-form .input-text-underline {
+        width:100%;
+    }
+
+}
