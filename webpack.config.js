@@ -5,6 +5,9 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 module.exports = {
     mode: 'production',
     entry: './plugin.js',
+    output: {
+        filename: 'plugin-nickserv.js',
+    },
     module: {
         rules: [
             {
@@ -29,6 +32,7 @@ module.exports = {
     ],
     devtool: 'source-map',
     devServer: {
+        filename: 'plugin-nickserv.js',
         contentBase: path.join(__dirname, "dist"),
         compress: true,
     }
