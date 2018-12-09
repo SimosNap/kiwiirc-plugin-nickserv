@@ -14,51 +14,42 @@
 
     export default {
     
-            data: function data() {
-                return {
-                accountInput:'',
-                pwdInput: ''
-                }
+        data: function data() {
+            return {
+            accountInput:'',
+            pwdInput: ''
+            }
+        },
+        computed: {
+            themeName: function() {
+                return kiwi.themes.currentTheme().name.toLowerCase();
             },
-    
-            computed: {
-                themeName: function() {
-                    return data.themeName;
-                },
                 LoginText: function () { 
-                    return Utils.getString('LoginText');
-                },
-                IDButton: function () { 
-                    return Utils.getString('IDButton');
-                }
+                return Utils.getString('LoginText');
             },
-    
-            methods: {
-              onIdentify: function () {
-                kiwi.state.$emit('input.raw', '/NS identify '+ this.accountInput + ' ' + this.pwdInput )
-                kiwi.state.$emit('input.raw', '/NICK '+ this.accountInput )
-                var loginNick = this.accountInput;
-                var http = new XMLHttpRequest();
-                var url = 'https://webcpanel.simosnap.com/';
-                var params = 'username='+this.accountInput+'&password='+this.pwdInput;
-                http.open('POST', url, true);
-    
-                //Send the proper header information along with the request
-                http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    
-                http.withCredentials = true;
-                http.send(params);
-    
-    
-                }
-            },
+            IDButton: function () { 
+                return Utils.getString('IDButton');
+            }
+        },
+
+        methods: {
+          onIdentify: function () {
+            kiwi.state.$emit('input.raw', '/NS identify '+ this.accountInput + ' ' + this.pwdInput )
+            kiwi.state.$emit('input.raw', '/NICK '+ this.accountInput )
+            var loginNick = this.accountInput;
+            var http = new XMLHttpRequest();
+            var url = 'https://webcpanel.simosnap.com/';
+            var params = 'username='+this.accountInput+'&password='+this.pwdInput;
+            http.open('POST', url, true);
+
+            //Send the proper header information along with the request
+            http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+            http.withCredentials = true;
+            http.send(params);
+
+
+            }
+        },
     };
-    var data = new kiwi.Vue({data: {themeName: ''}});
-    data.themeName = kiwi.themes.currentTheme().name.toLowerCase();
-
-    kiwi.on('theme.change', function(event) {
-        data.themeName = kiwi.themes.currentTheme().name.toLowerCase();
-        console.log(data.themeName);
-
-    });
 </script>

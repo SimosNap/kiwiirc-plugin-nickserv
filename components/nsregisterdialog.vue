@@ -11,45 +11,34 @@
 </template>
 <script>
     import * as Utils from '../libs/Utils.js';
-
     export default {
     
-            data: function data() {
-                return {
-                accountInput:'',
-                pwdInput: ''
-                }
+        data: function data() {
+            return {
+            accountInput:'',
+            pwdInput: ''
+            }
+        },
+        computed: {
+            themeName: function() {
+                return kiwi.themes.currentTheme().name.toLowerCase();
             },
-    
-            computed: {
-                themeName: function() {
-                    return data.themeName;
-                },
-                currentNick: function() {
-                    var net = kiwi.state.getActiveNetwork();
-                    return net.ircClient.user.nick;
-                },
-                RegisterText: function () { 
-                    return Utils.getString('RegisterText');
-                },
-                RegButton: function () { 
-                    return Utils.getString('RegButton');
-                }
+            currentNick: function() {
+                var net = kiwi.state.getActiveNetwork();
+                return net.ircClient.user.nick;
             },
-    
-            methods: {
-              onRegister: function () {
-                kiwi.state.$emit('input.raw', '/NS register '+ this.pwdInput + ' ' + this.accountInput )
-    
-                }
+            RegisterText: function () { 
+                return Utils.getString('RegisterText');
             },
+            RegButton: function () { 
+                return Utils.getString('RegButton');
+            }
+        },
+        methods: {
+          onRegister: function () {
+            kiwi.state.$emit('input.raw', '/NS register '+ this.pwdInput + ' ' + this.accountInput )
+
+            }
+        },
     };
-    var data = new kiwi.Vue({data: {themeName: ''}});
-    data.themeName = kiwi.themes.currentTheme().name.toLowerCase();
-
-    kiwi.on('theme.change', function(event) {
-        data.themeName = kiwi.themes.currentTheme().name.toLowerCase();
-        console.log(data.themeName);
-
-    });
 </script>

@@ -21,7 +21,7 @@
     
         computed: {
             themeName: function() {
-                return data.themeName;
+                return kiwi.themes.currentTheme().name.toLowerCase();
             },
             ConfirmReqText: function () { 
                 return Utils.getString('ConfirmReqText');
@@ -38,12 +38,4 @@
             }
         },
     };
-    var data = new kiwi.Vue({data: {themeName: ''}});
-    data.themeName = kiwi.themes.currentTheme().name.toLowerCase();
-
-    kiwi.on('theme.change', function(event) {
-        data.themeName = kiwi.themes.currentTheme().name.toLowerCase();
-        console.log(data.themeName);
-
-    });
 </script>
