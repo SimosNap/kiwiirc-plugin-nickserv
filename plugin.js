@@ -10,42 +10,41 @@ kiwi.plugin('nickserv', function(kiwi) {
 
     // Plugin Config #########################################################################
 
-    // NickServ Identify Regex
-    var IDString = "^Questo nick è registrato e protetto. Se questo è il tuo";
-    // Wrong password Regex
-    var WPString = "^Password errata";
     // Wrong password text
     var WPText = "Password errata!";
     // Bad password text on register
     var BPText = "Attenzione, prova di nuovo con una password più sicura.<br> Le password devono essere lunghe almeno 5 caratteri, non devono essere facilmente intuibili (ad es. il proprio nome o nick)<br> e non possono contenere i caratteri di spazio e di tabulazione.";
-    // Services enforce nick Regex
+
+    // ANOPE NICKSERV
+    // NickServ Identify Regex   include/language.h:92
+    var IDString = "^Questo nick è registrato e protetto. Se questo è il tuo";
+    // Wrong password Regex include/language.h:71
+    var WPString = "^Password errata";
+    // Services enforce nick Regex  modules/pseudoclients/nickserv.cpp:254
     var ENString = "^Il tuo nick sarà cambiato in";
-    // Login success Regex
-    var LSString = "^Password accettata - adesso sei riconosciuto";
-    // Account confirmation request Regex
+    // Account confirmation request Regex  modules/commands/ns_register.cpp:260 modules/commands/ns_register.cpp:391
     var ConfirmReqString = "^Il tuo indirizzo email non è stato confermato. Per confermarlo, segui le istruzioni contenute nella email che hai ricevuto quando ti sei registrato";
-    // Invalid Confirmation code Regex
+    // Invalid Confirmation code Regex modules/commands/ns_register.cpp:83 modules/commands/ns_register.cpp:86
     var InvalidConfirmString = "^Codice di attivazione non valido";
-    // Invalid Confirmation code text
+    // Invalid Confirmation code text include/language.h:99
     var InvalidConfirmText = "Codice di attivazione non valido. Inserisci il codice di conferma ricevuto per email per completare la registrazione dell\' account.";
-    // A valid confirmation code has been entered
+    // A valid confirmation code has been entered modules/commands/ns_register.cpp:67
     var ValidConfirmString = "^Il tuo indirizzo email per (.*) è stato confermato.";
-    // Bad Password Notify
+    // Bad Password Notify include/language.h:73
     var BadPwdString = "^Attenzione, prova di nuovo con una password più sicura.";
-    // Bad Email Notify
+    // Bad Email Notify include/language.h:86
     var BadEmailString = "non è un indirizzo e-mail valido.";
-    // Register delay
+    // Register delay modules/commands/ns_register.cpp:153
     var RegDelayString = "^E' necessario aver usato questo nick per almeno 30 secondi prima di poterlo registrare.";
-    // Valid Password
+    // Login success Valid Password Regex modules/commands/ns_identify.cpp:38
     var ValidPwdString = "^Password accettata - adesso sei riconosciuto.";
-    // Already identified
+    // Already identified modules/commands/ns_identify.cpp:87 modules/commands/os_login.cpp:34
     var AlreadyIdString ="^Sei già identificato.";
     // End Plugin Config  ####################################################################
 
     var IDRe = new RegExp(IDString ,"");
     var WPRe = new RegExp(WPString ,"");
     var ENRe = new RegExp(ENString ,"");
-    var LSRe = new RegExp(LSString ,"");
     var ConfirmReqRe = new RegExp(ConfirmReqString ,"");
     var InvalidConfirmRe = new RegExp(InvalidConfirmString ,"");
     var ValidConfirmRe = new RegExp(ValidConfirmString ,"");
@@ -174,10 +173,6 @@ kiwi.plugin('nickserv', function(kiwi) {
                 kiwi.state.$emit('mediaviewer.hide')
             }
 
-        if ((event.nick == 'NickServ') && (event.message.match(LSRe))) {
-                kiwi.state.$emit('mediaviewer.hide')
-            }
-
         if ((event.nick == 'NickServ') && (event.message.match(ValidConfirmRe))) {
                 kiwi.state.$emit('mediaviewer.hide')
             }
@@ -187,12 +182,10 @@ kiwi.plugin('nickserv', function(kiwi) {
                 el.innerHTML = BPText ;
             }
 
-
         if ((event.nick == 'NickServ') && (event.message.match(BadEmailRe))) {
                 var el = document.getElementById("validate")
                 el.innerHTML = event.message ;
             }
-
 
         if ((event.nick == 'NickServ') && (event.message.match(RegDelayRe))) {
                 var el = document.getElementById("validate");
@@ -204,6 +197,7 @@ kiwi.plugin('nickserv', function(kiwi) {
         if ((event.nick == 'NickServ') && (event.message.match(ValidPwdRe))) {
                 var el = document.getElementById("validate");
                 el.innerHTML = event.message ;
+                console.log('ValidPwdRe');
                 setTimeout(function() {
                     kiwi.state.$emit('mediaviewer.hide');
                 }, 2000);
