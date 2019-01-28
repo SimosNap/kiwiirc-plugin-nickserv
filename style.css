@@ -1,13 +1,13 @@
 .kiwi-statebrowser-register {
     position: absolute;
     top: 0;
-    left: 32px;
+    left: 39px;
     width: auto;
     text-align: left;
     padding: 0 10px;
     font-size: 1em;
     box-sizing: border-box;
-    line-height: 35px;
+    line-height: 57px;
     cursor: pointer;
     font-weight: 500;
     letter-spacing: 1px;
@@ -25,7 +25,6 @@
 }
 
 .kiwi-statebrowser-register i {
-    float: right;
     line-height: 35px;
     font-size: 1.2em;
 }
