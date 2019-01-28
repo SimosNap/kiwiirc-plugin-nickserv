@@ -30,7 +30,6 @@ module.exports = {
     plugins: [
         new VueLoaderPlugin()
     ],
-    devtool: 'source-map',
     devServer: {
         filename: 'plugin-nickserv.js',
         contentBase: path.join(__dirname, "dist"),
