@@ -67,21 +67,16 @@
     margin-right:5px;
 }
 .kiwi-ns-input {
-    border-top:1px solid rgba(0, 0, 0, 0.2) !important;
-    padding:10px !important;
-    width:468px !important;
-    margin:0 auto;
+	max-width:468px;
+	margin-left: auto;
+	margin-right: auto;
 }
 #nickserv-form .input-text-underline {
     width:468px;
-    margin:0 auto;
+
 }
 .kiwi-ns-button {
-    font-size:1.2em;border-radius:0px;
-    margin-top:10px;
-    margin-bottom:10px;
-    letter-spacing: 2px;
-    padding: .5em 1em;
+
 }
 
 .kiwi-ns-button:before {
@@ -96,12 +91,10 @@
         width:100%;
     }
 
-    .kiwi-ns-input {
-        width:100%;
-    }
 
     #nickserv-form .input-text-underline {
         width:100%;
+        margin:0px;
     }
 
 }
