@@ -3,7 +3,7 @@
         <p :class="['kiwi-' + themeName + '-simple-error', 'kiwi-ns-error']" id="validate">{{IDText}}</p>
         <div class="u-input-text kiwi-ns-input">
 		<div class="u-input-text-inputs">
-			<input class="u-input" placeholder="Inserisci la password" type="password" v-model="pwdInput">
+			<input class="u-input" placeholder="Inserisci la password" type="password" v-model="pwdInput" required>
 		</div>
 	</div>
         <div class="u-input-text-underline">
@@ -38,19 +38,6 @@
         methods: {
           onIdentify: function () {
             kiwi.state.$emit('input.raw', '/NS identify '+ this.pwdInput )
-            var loginNick = kiwi.state.getNetwork(1).nick;
-            var http = new XMLHttpRequest();
-            var url = 'https://webcpanel.simosnap.com/';
-            var params = 'username='+loginNick+'&password='+this.pwdInput;
-            http.open('POST', url, true);
-
-            //Send the proper header information along with the request
-            http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-            http.withCredentials = true;
-            http.send(params);
-
-
             }
         },
     };

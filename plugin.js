@@ -1,4 +1,3 @@
-import services from './components/services.vue';
 import confirmdialog from './components/confirmdialog.vue';
 import nsdialog from './components/nsdialog.vue';
 import nslogindialog from './components/nslogindialog.vue';
@@ -63,14 +62,8 @@ kiwi.plugin('nickserv', function(kiwi) {
 
     });
 
-    kiwi.addView('IRC Services CP', services);
-
     function registerFn() {
          kiwi.state.$emit('mediaviewer.show', {component: nsregisterdialog });
-    }
-
-    function cpanelFn() {
-         kiwi.showView('IRC Services CP');
     }
 
     function logoutFn() {
@@ -93,24 +86,6 @@ kiwi.plugin('nickserv', function(kiwi) {
     loginBtn.addEventListener("click", loginFn);
     kiwi.addUi('header_channel', loginBtn);
 
-    kiwi.once('network.connecting', function(event) {
-
-        var loginNick = event.network.nick;
-        var loginPass = event.network.connection.password;
-        //kiwi.addTab('server', 'IRC Services CP', services );
-
-        var http = new XMLHttpRequest();
-        var url = 'https://webcpanel.simosnap.com/';
-        var params = 'username='+loginNick+'&password='+loginPass;
-        http.open('POST', url, true);
-
-        //Send the proper header information along with the request
-        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-        http.withCredentials = true;
-        http.send(params);
-    });
-
     kiwi.on('irc.mode', function(event, network) {
         //console.log(event);
         if ((event.nick == "NickServ") && (event.target == network.nick)) {
@@ -124,26 +99,13 @@ kiwi.plugin('nickserv', function(kiwi) {
                         loginBtn.removeEventListener("click", loginFn);
                         loginBtn.addEventListener("click", logoutFn);
                         RegBtn.removeEventListener("click", registerFn );
-                        RegBtn.addEventListener("click", cpanelFn );
-                        RegBtn.innerHTML = '<i aria-hidden="true" class="fa fa-dashboard"></i>';
-                        //RegBtn.style.visibility="hidden";
+                        RegBtn.style.visibility="hidden";
                     } else {
                         loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-sign-in"></i><span>Login</span>';
                         loginBtn.removeEventListener("click", logoutFn);
                         loginBtn.addEventListener("click", loginFn);
-                        RegBtn.removeEventListener("click", cpanelFn );
+                        RegBtn.style.visibility="visible";
                         RegBtn.addEventListener("click", registerFn );
-                        RegBtn.innerHTML = '<i aria-hidden="true" class="fa fa-lock"></i>';
-                        //RegBtn.style.visibility="visible";
-                        var http = new XMLHttpRequest();
-                        var url = 'https://webcpanel.simosnap.com/logout';
-                        http.open('GET', url, true);
-
-                        //Send the proper header information along with the request
-                        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-                        http.withCredentials = true;
-                        http.send();
                     }
 
                 }, 0);
