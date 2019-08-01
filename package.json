@@ -16,11 +16,11 @@
 	"devDependencies": {
 		"css-loader": "^0.28.11",
 		"style-loader": "^0.20.3",
+		"vue-loader": "^15.2.4",
+		"vue-template-compiler": "^2.0.0",
 		"webpack": "^4.8.3",
 		"webpack-cli": "^2.0.13",
 		"webpack-dev-server": "^3.1.1",
-        "vue-loader": "^15.2.4",
-        "vue-template-compiler": "^2.0.0",
 		"xo": "^0.20.3"
 	}
 }
