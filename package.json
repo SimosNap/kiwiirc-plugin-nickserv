@@ -10,16 +10,15 @@
 		"serve": "webpack-dev-server",
 		"test": "xo"
 	},
-	"dependencies": {
-	},
+	"dependencies": {},
 	"devDependencies": {
-		"css-loader": "^0.28.11",
-		"style-loader": "^0.20.3",
-		"webpack": "^4.8.3",
-		"webpack-cli": "^2.0.13",
+		"css-loader": "^3.1.0",
+		"style-loader": "^0.23.1",
+		"vue-loader": "^15.2.4",
+		"vue-template-compiler": "^2.0.0",
+		"webpack": "^4.39.1",
+		"webpack-cli": "^3.3.6",
 		"webpack-dev-server": "^3.1.11",
-        "vue-loader": "^15.2.4",
-        "vue-template-compiler": "^2.0.0",
-		"xo": "^0.20.3"
+		"xo": "^0.24.0"
 	}
 }
