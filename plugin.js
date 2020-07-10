@@ -119,36 +119,44 @@ kiwi.plugin('nickserv', function(kiwi) {
 
         if (event.message.match(IDRe)) {
                 kiwi.state.$emit('mediaviewer.show', {component: nsdialog })
+                return;
             }
         if (event.message.match(WPRe)) {
                 var el = document.getElementById("validate")
                 el.innerHTML = WPText ;
+                return;
             }
         if (event.message.match(ConfirmReqRe)) {
                 kiwi.state.$emit('mediaviewer.show', {component: confirmdialog })
+                return;
             }
 
         if (event.message.match(InvalidConfirmRe)) {
                 var el = document.getElementById("validate")
                 el.innerHTML = InvalidConfirmText ;
+                return;
             }
 
         if (event.message.match(ENRe)) {
                 kiwi.state.$emit('mediaviewer.hide')
+                return;
             }
 
         if (event.message.match(ValidConfirmRe)) {
                 kiwi.state.$emit('mediaviewer.hide')
+                return;
             }
 
         if (event.message.match(BadPwdRe)) {
                 var el = document.getElementById("validate")
                 el.innerHTML = BPText ;
+                return;
             }
 
         if (event.message.match(BadEmailRe)) {
                 var el = document.getElementById("validate")
                 el.innerHTML = event.message ;
+                return;
             }
 
         if (event.message.match(RegDelayRe)) {
@@ -157,6 +165,7 @@ kiwi.plugin('nickserv', function(kiwi) {
                 setTimeout(function() {
                     kiwi.state.$emit('mediaviewer.hide');
                 }, 2000);
+                return;
             }
         if (event.message.match(ValidPwdRe)) {
                 var el = document.getElementById("validate");
@@ -165,6 +174,7 @@ kiwi.plugin('nickserv', function(kiwi) {
                 setTimeout(function() {
                     kiwi.state.$emit('mediaviewer.hide');
                 }, 2000);
+                return;
             }
 
         if (event.message.match(AlreadyIdRe)) {
@@ -173,6 +183,7 @@ kiwi.plugin('nickserv', function(kiwi) {
                 setTimeout(function() {
                     kiwi.state.$emit('mediaviewer.hide');
                 }, 2000);
+                return;
             }
          });
 
