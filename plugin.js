@@ -114,49 +114,51 @@ kiwi.plugin('nickserv', function(kiwi) {
     });
 
     kiwi.on('irc.notice', function(event) {
+        
+        if (event.nick.toLowerCase() !== 'nickserv') { return; }
 
-        if ((event.nick == 'NickServ') && (event.message.match(IDRe))) {
+        if (event.message.match(IDRe)) {
                 kiwi.state.$emit('mediaviewer.show', {component: nsdialog })
             }
-        if ((event.nick == 'NickServ') && (event.message.match(WPRe))) {
+        if (event.message.match(WPRe)) {
                 var el = document.getElementById("validate")
                 el.innerHTML = WPText ;
             }
-        if ((event.nick == 'NickServ') && (event.message.match(ConfirmReqRe))) {
+        if (event.message.match(ConfirmReqRe)) {
                 kiwi.state.$emit('mediaviewer.show', {component: confirmdialog })
             }
 
-        if ((event.nick == 'NickServ') && (event.message.match(InvalidConfirmRe))) {
+        if (event.message.match(InvalidConfirmRe)) {
                 var el = document.getElementById("validate")
                 el.innerHTML = InvalidConfirmText ;
             }
 
-        if ((event.nick == 'NickServ') && (event.message.match(ENRe))) {
+        if (event.message.match(ENRe)) {
                 kiwi.state.$emit('mediaviewer.hide')
             }
 
-        if ((event.nick == 'NickServ') && (event.message.match(ValidConfirmRe))) {
+        if (event.message.match(ValidConfirmRe)) {
                 kiwi.state.$emit('mediaviewer.hide')
             }
 
-        if ((event.nick == 'NickServ') && (event.message.match(BadPwdRe))) {
+        if (event.message.match(BadPwdRe)) {
                 var el = document.getElementById("validate")
                 el.innerHTML = BPText ;
             }
 
-        if ((event.nick == 'NickServ') && (event.message.match(BadEmailRe))) {
+        if (event.message.match(BadEmailRe)) {
                 var el = document.getElementById("validate")
                 el.innerHTML = event.message ;
             }
 
-        if ((event.nick == 'NickServ') && (event.message.match(RegDelayRe))) {
+        if (event.message.match(RegDelayRe)) {
                 var el = document.getElementById("validate");
                 el.innerHTML = event.message ;
                 setTimeout(function() {
                     kiwi.state.$emit('mediaviewer.hide');
                 }, 2000);
             }
-        if ((event.nick == 'NickServ') && (event.message.match(ValidPwdRe))) {
+        if (event.message.match(ValidPwdRe)) {
                 var el = document.getElementById("validate");
                 el.innerHTML = event.message ;
                 //console.log('ValidPwdRe');
@@ -165,7 +167,7 @@ kiwi.plugin('nickserv', function(kiwi) {
                 }, 2000);
             }
 
-        if ((event.nick == 'NickServ') && (event.message.match(AlreadyIdRe))) {
+        if (event.message.match(AlreadyIdRe)) {
                 var el = document.getElementById("validate");
                 el.innerHTML = event.message ;
                 setTimeout(function() {
