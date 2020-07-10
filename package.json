@@ -12,13 +12,13 @@
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"css-loader": "^3.1.0",
-		"style-loader": "^0.23.1",
-		"vue-loader": "^15.2.4",
+		"css-loader": "^3.6.0",
+		"style-loader": "^1.2.1",
+		"vue-loader": "^15.9.3",
 		"vue-template-compiler": "^2.0.0",
 		"webpack": "^4.39.1",
-		"webpack-cli": "^3.3.6",
+		"webpack-cli": "^3.3.12",
 		"webpack-dev-server": "^3.1.11",
-		"xo": "^0.24.0"
+		"xo": "^0.32.1"
 	}
 }

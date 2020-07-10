@@ -58,7 +58,7 @@ kiwi.plugin('nickserv', function(kiwi) {
 
     kiwi.on('theme.change', function(event) {
         data.themeName = kiwi.themes.currentTheme().name.toLowerCase();
-        console.log(data.themeName);
+        //console.log(data.themeName);
 
     });
 
@@ -91,7 +91,7 @@ kiwi.plugin('nickserv', function(kiwi) {
         if ((event.nick == "NickServ") && (event.target == network.nick)) {
             setTimeout(function() {
                 var net = kiwi.state.getActiveNetwork();
-                console.log(net.ircClient.user.modes.has('r'));
+                //console.log(net.ircClient.user.modes.has('r'));
                 var hasR = net.ircClient.user.modes.has('r');
 
                 if (hasR == true) {
@@ -159,7 +159,7 @@ kiwi.plugin('nickserv', function(kiwi) {
         if ((event.nick == 'NickServ') && (event.message.match(ValidPwdRe))) {
                 var el = document.getElementById("validate");
                 el.innerHTML = event.message ;
-                console.log('ValidPwdRe');
+                //console.log('ValidPwdRe');
                 setTimeout(function() {
                     kiwi.state.$emit('mediaviewer.hide');
                 }, 2000);
