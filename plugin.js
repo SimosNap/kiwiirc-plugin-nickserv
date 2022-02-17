@@ -58,8 +58,6 @@ kiwi.plugin('nickserv', function(kiwi) {
 
     kiwi.on('theme.change', function(event) {
         data.themeName = kiwi.themes.currentTheme().name.toLowerCase();
-        //console.log(data.themeName);
-
     });
 
     function registerFn() {
@@ -74,71 +72,46 @@ kiwi.plugin('nickserv', function(kiwi) {
          kiwi.state.$emit('mediaviewer.show', {component: nslogindialog });
     }
 
-
-    /*var RegBtn = document.createElement('div');
-    RegBtn.className = 'kiwi-statebrowser-register';
-    RegBtn.addEventListener("click", registerFn );
-    RegBtn.innerHTML = '<i aria-hidden="true" class="fa fa-lock"></i>';
-    kiwi.addUi('browser', RegBtn);*/
-
     var loginBtn = document.createElement('a');
     loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-sign-in"></i><span>Login</span>';
     loginBtn.addEventListener("click", loginFn);
     kiwi.addUi('header_channel', loginBtn);
 
-	kiwi.on('irc.account', function(event, network) {
-		if (event.nick == network.nick) {
-			if (event.account == false ) {
+    kiwi.on('irc.account', function(event, network) {
+        if (event.nick == network.nick) {
+            if (event.account == false ) {
                 loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-sign-in"></i><span>Login</span>';
                 loginBtn.removeEventListener("click", logoutFn);
-                loginBtn.addEventListener("click", loginFn);				
-			} else {
+                loginBtn.addEventListener("click", loginFn);
+            } else {
                 loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-sign-out"></i><span>Logout</span>';
                 loginBtn.removeEventListener("click", loginFn);
-                loginBtn.addEventListener("click", logoutFn);			
-			}
-		}
-		console.log('ACCOUNT:', event);
-	});
-	
-	kiwi.on('irc.raw.477', function(command, event, network){
-		console.log('COMMAND:', command);
-		console.log('EVENT:', event.params[1]);
-        kiwi.state.$emit('mediaviewer.show', {component: nslogindialog, componentProps: { channel : event.params[1] }});
-        return;
-		
-	});
-
-   /* kiwi.on('irc.mode', function(event, network) {
-        //console.log(event);
-        if ((event.nick == "NickServ") && (event.target == network.nick)) {
-            setTimeout(function() {
-                var net = kiwi.state.getActiveNetwork();
-                //console.log(net.ircClient.user.modes.has('r'));
-                var hasR = net.ircClient.user.modes.has('r');
-
-                if (hasR == true) {
-                        loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-sign-out"></i><span>Logout</span>';
-                        loginBtn.removeEventListener("click", loginFn);
-                        loginBtn.addEventListener("click", logoutFn);
-                        //RegBtn.removeEventListener("click", registerFn );
-                        //RegBtn.style.visibility="hidden";
-                    } else {
-                        loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-sign-in"></i><span>Login</span>';
-                        loginBtn.removeEventListener("click", logoutFn);
-                        loginBtn.addEventListener("click", loginFn);
-                        //RegBtn.style.visibility="visible";
-                        //RegBtn.addEventListener("click", registerFn );
-                    }
-
-                }, 0);
+                loginBtn.addEventListener("click", logoutFn);
+            }
         }
+    });
+
+    kiwi.on('irc.raw.477', function(command, event, network){
+        let preMessage = 'L\' accesso al canale ';
+        let postMessage = 'è riservato agli utenti registrati';
+        let action = 'per accedere';
+        kiwi.state.$emit('mediaviewer.show', {component: nslogindialog, componentProps: { preMessage: preMessage, channel : event.params[1], join : event.params[1], postMessage : postMessage, action: action }});
+        return;
 
     });
-    */
+
+    kiwi.on('irc.raw.474', function(command, event, network){
+        let preMessage = 'Solamente gli utenti registrati possono creare dei canali';
+        let postMessage = '';
+        let action = 'per creare ';
+        let channel = '';
+        kiwi.state.$emit('mediaviewer.show', {component: nslogindialog, componentProps: { preMessage: preMessage, channel : channel, join : event.params[1], postMessage : postMessage, action: action }});
+        return;
+
+    });
 
     kiwi.on('irc.notice', function(event) {
-        
+
         if (event.nick.toLowerCase() !== 'nickserv') { return; }
 
         if (event.message.match(IDRe)) {
@@ -194,7 +167,6 @@ kiwi.plugin('nickserv', function(kiwi) {
         if (event.message.match(ValidPwdRe)) {
                 var el = document.getElementById("validate");
                 el.innerHTML = event.message ;
-                //console.log('ValidPwdRe');
                 setTimeout(function() {
                     kiwi.state.$emit('mediaviewer.hide');
                 }, 2000);

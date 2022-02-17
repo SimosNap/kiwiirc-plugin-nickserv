@@ -5,8 +5,9 @@
             <div class="u-button menu-nsform  menu-nsform-right" @click="goRegister()">Registra Account</div>
         </div>
         <div :class="['kiwi-' + themeName + '-simple-nick', 'u-form', 'u-input', 'u-input-text', 'u-input-text--focus', 'u-input-text--reveal-value']" id="nickserv-form" title="NickServ" style="text-align:center;">
-            <p v-if="componentProps != null" style="margin-bottom:0px;">L' accesso al canale <span class="current-nickname">{{ componentProps.channel }}</span> è riservato agli utenti registrati</p>
-            <p :class="['kiwi-' + themeName + '-simple-error', 'kiwi-ns-login']" id="validate">{{LoginText}} <span v-if="componentProps != null">per accedere</span></p>
+            <p v-if="componentProps != null" style="margin-bottom:-0.5em">{{ componentProps.preMessage }} <span class="current-nickname">{{ componentProps.channel }}</span> {{ componentProps.postMessage }}</p>
+            <p :class="['kiwi-' + themeName + '-simple-error', 'kiwi-ns-login']" id="validate">{{LoginText}} <span v-if="componentProps != null">{{ componentProps.action }}</span><span v-if="componentProps != null && componentProps.channel == ''" class="current-nickname">{{ componentProps.join }}</span></p>
+             <p v-if="!componentProps" style="margin: -1em 0 0.5em 0;">Usa Il tuo nickname oppure un alias del tuo gruppo. <a class="u-link" href="https://www.simosnap.org/account" target="_blank">Pannello Account</a></p>
             <div class="u-input-text kiwi-ns-input">
                 <div class="u-input-text-inputs">
                     <input class="u-input" placeholder="Inserisci account NickServ" type="text" v-model="accountInput">
@@ -54,7 +55,7 @@
                 kiwi.state.$emit('input.raw', '/NS identify '+ this.accountInput + ' ' + this.pwdInput )
                 kiwi.state.$emit('input.raw', '/NICK '+ this.accountInput )
                 if (this.componentProps.channel != null ) {
-                    kiwi.state.$emit('input.raw', '/JOIN '+ this.componentProps.channel );
+                    kiwi.state.$emit('input.raw', '/JOIN '+ this.componentProps.join );
                     this.executed = true;
                 }
             },
@@ -63,10 +64,9 @@
             }
         },
         beforeDestroy: function beforeDestroy() {
-            if (this.executed == false) {
-
+            if ((this.executed == false) && (this.componentProps != null)) {
                 let network = kiwi.state.getActiveNetwork();
-                let buffer = kiwi.state.getBufferByName(network.id, this.componentProps.channel);
+                let buffer = kiwi.state.getBufferByName(network.id, this.componentProps.join);
                 kiwi.state.removeBuffer(buffer);
             }
         },
