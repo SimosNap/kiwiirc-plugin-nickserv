@@ -75,18 +75,41 @@ kiwi.plugin('nickserv', function(kiwi) {
     }
 
 
-    var RegBtn = document.createElement('div');
+    /*var RegBtn = document.createElement('div');
     RegBtn.className = 'kiwi-statebrowser-register';
     RegBtn.addEventListener("click", registerFn );
     RegBtn.innerHTML = '<i aria-hidden="true" class="fa fa-lock"></i>';
-    kiwi.addUi('browser', RegBtn);
+    kiwi.addUi('browser', RegBtn);*/
 
     var loginBtn = document.createElement('a');
     loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-sign-in"></i><span>Login</span>';
     loginBtn.addEventListener("click", loginFn);
     kiwi.addUi('header_channel', loginBtn);
 
-    kiwi.on('irc.mode', function(event, network) {
+	kiwi.on('irc.account', function(event, network) {
+		if (event.nick == network.nick) {
+			if (event.account == false ) {
+                loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-sign-in"></i><span>Login</span>';
+                loginBtn.removeEventListener("click", logoutFn);
+                loginBtn.addEventListener("click", loginFn);				
+			} else {
+                loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-sign-out"></i><span>Logout</span>';
+                loginBtn.removeEventListener("click", loginFn);
+                loginBtn.addEventListener("click", logoutFn);			
+			}
+		}
+		console.log('ACCOUNT:', event);
+	});
+	
+	kiwi.on('irc.raw.477', function(command, event, network){
+		console.log('COMMAND:', command);
+		console.log('EVENT:', event.params[1]);
+        kiwi.state.$emit('mediaviewer.show', {component: nslogindialog, componentProps: { channel : event.params[1] }});
+        return;
+		
+	});
+
+   /* kiwi.on('irc.mode', function(event, network) {
         //console.log(event);
         if ((event.nick == "NickServ") && (event.target == network.nick)) {
             setTimeout(function() {
@@ -98,20 +121,21 @@ kiwi.plugin('nickserv', function(kiwi) {
                         loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-sign-out"></i><span>Logout</span>';
                         loginBtn.removeEventListener("click", loginFn);
                         loginBtn.addEventListener("click", logoutFn);
-                        RegBtn.removeEventListener("click", registerFn );
-                        RegBtn.style.visibility="hidden";
+                        //RegBtn.removeEventListener("click", registerFn );
+                        //RegBtn.style.visibility="hidden";
                     } else {
                         loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-sign-in"></i><span>Login</span>';
                         loginBtn.removeEventListener("click", logoutFn);
                         loginBtn.addEventListener("click", loginFn);
-                        RegBtn.style.visibility="visible";
-                        RegBtn.addEventListener("click", registerFn );
+                        //RegBtn.style.visibility="visible";
+                        //RegBtn.addEventListener("click", registerFn );
                     }
 
                 }, 0);
         }
 
     });
+    */
 
     kiwi.on('irc.notice', function(event) {
         
