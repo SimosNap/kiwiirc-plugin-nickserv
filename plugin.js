@@ -96,6 +96,7 @@ kiwi.plugin('nickserv', function(kiwi) {
         let postMessage = 'è riservato agli utenti registrati';
         let action = 'per accedere';
         kiwi.state.$emit('mediaviewer.show', {component: nslogindialog, componentProps: { preMessage: preMessage, channel : event.params[1], join : event.params[1], postMessage : postMessage, action: action }});
+        event.handled = true;
         return;
 
     });
@@ -106,6 +107,7 @@ kiwi.plugin('nickserv', function(kiwi) {
         let action = 'per creare ';
         let channel = '';
         kiwi.state.$emit('mediaviewer.show', {component: nslogindialog, componentProps: { preMessage: preMessage, channel : channel, join : event.params[1], postMessage : postMessage, action: action }});
+        event.handled = true;
         return;
 
     });
