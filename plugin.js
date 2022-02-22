@@ -77,6 +77,12 @@ kiwi.plugin('nickserv', function(kiwi) {
     loginBtn.addEventListener("click", loginFn);
     kiwi.addUi('header_channel', loginBtn);
 
+    kiwi.on('irc.raw.900', function(command, event, network){
+                loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-sign-out"></i><span>Logout</span>';
+                loginBtn.removeEventListener("click", loginFn);
+                loginBtn.addEventListener("click", logoutFn);
+    });
+
     kiwi.on('irc.account', function(event, network) {
         if (event.nick == network.nick) {
             if (event.account == false ) {
