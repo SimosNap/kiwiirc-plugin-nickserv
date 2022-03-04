@@ -98,9 +98,22 @@ kiwi.plugin('nickserv', function(kiwi) {
     });
 
     kiwi.on('irc.raw.477', function(command, event, network){
-        let preMessage = 'L\' accesso al canale ';
-        let postMessage = 'è riservato agli utenti registrati';
-        let action = 'per accedere';
+        console.log(event.params[1].substring(0,1));
+
+            let preMessage = '';
+            let postMessage = '';
+            let action = '';
+
+        if (event.params[1].substring(0,1) == '#') {
+            preMessage = 'L\' accesso al canale ';
+            postMessage = 'è riservato agli utenti registrati';
+            action = 'per accedere';           
+        } else {
+            preMessage = '';
+            postMessage = 'accetta messaggi solo da utenti registrati';
+            action = 'per continuare';
+        }
+
         kiwi.state.$emit('mediaviewer.show', {component: nslogindialog, componentProps: { preMessage: preMessage, channel : event.params[1], join : event.params[1], postMessage : postMessage, action: action }});
         event.handled = true;
         return;

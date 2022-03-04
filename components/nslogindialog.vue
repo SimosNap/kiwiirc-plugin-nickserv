@@ -54,7 +54,7 @@
             onIdentify: function () {
                 kiwi.state.$emit('input.raw', '/NS identify '+ this.accountInput + ' ' + this.pwdInput )
                 kiwi.state.$emit('input.raw', '/NICK '+ this.accountInput )
-                if (this.componentProps.channel != null ) {
+                if (this.componentProps && this.componentProps.channel) {
                     kiwi.state.$emit('input.raw', '/JOIN '+ this.componentProps.join );
                     this.executed = true;
                 }
