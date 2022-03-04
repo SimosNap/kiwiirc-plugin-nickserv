@@ -98,11 +98,10 @@ kiwi.plugin('nickserv', function(kiwi) {
     });
 
     kiwi.on('irc.raw.477', function(command, event, network){
-        console.log(event.params[1].substring(0,1));
 
-            let preMessage = '';
-            let postMessage = '';
-            let action = '';
+        let preMessage = '';
+        let postMessage = '';
+        let action = '';
 
         if (event.params[1].substring(0,1) == '#') {
             preMessage = 'L\' accesso al canale ';
