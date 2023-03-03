@@ -120,15 +120,28 @@ kiwi.plugin('nickserv', function(kiwi) {
     });
 
     kiwi.on('irc.raw.474', function(command, event, network){
-        let preMessage = 'Solamente gli utenti registrati possono creare dei canali';
-        let postMessage = '';
-        let action = 'per creare ';
-        let channel = '';
-        kiwi.state.$emit('mediaviewer.show', {component: nslogindialog, componentProps: { preMessage: preMessage, channel : channel, join : event.params[1], postMessage : postMessage, action: action }});
-        event.handled = true;
-        return;
-
+        if (event.params[2] === "You are not allowed to create new channels, registration required.") {
+            let preMessage = 'Solamente gli utenti registrati possono creare dei canali';
+            let postMessage = '';
+            let action = 'per creare ';
+            let channel = '';
+            kiwi.state.$emit('mediaviewer.show', {component: nslogindialog, componentProps: { preMessage: preMessage, channel : channel, join : event.params[1], postMessage : postMessage, action: action }});
+            event.handled = true;
+            return;
+        }
     });
+
+    /*kiwi.on('irc.raw.473', function(command, event, network){
+
+            let preMessage = 'Solamente gli utenti registrati possono creare dei canali';
+            let postMessage = '';
+            let action = 'per creare ';
+            let channel = '';
+            kiwi.state.$emit('mediaviewer.show', {component: nslogindialog, componentProps: { preMessage: preMessage, channel : channel, join : event.params[1], postMessage : postMessage, action: action }});
+            event.handled = true;
+            return;
+
+    }); */
 
     kiwi.on('irc.notice', function(event) {
 
