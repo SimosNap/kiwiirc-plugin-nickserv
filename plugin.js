@@ -5,7 +5,11 @@ import nsregisterdialog from './components/nsregisterdialog.vue';
 
 import './style.css'
 
+kiwi.pluginNickserv = { nsregisterdialog };
+
 kiwi.plugin('nickserv', function(kiwi) {
+    
+    
 
     // Plugin Config #########################################################################
 
