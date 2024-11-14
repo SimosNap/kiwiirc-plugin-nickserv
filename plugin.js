@@ -2,14 +2,16 @@ import confirmdialog from './components/confirmdialog.vue';
 import nsdialog from './components/nsdialog.vue';
 import nslogindialog from './components/nslogindialog.vue';
 import nsregisterdialog from './components/nsregisterdialog.vue';
+import errorMessage from './components/errorMessage.vue';
+const TextFormatting = kiwi.require('helpers/TextFormatting');
+
 
 import './style.css'
 
 kiwi.pluginNickserv = { nsregisterdialog };
 
 kiwi.plugin('nickserv', function(kiwi) {
-    
-    
+
 
     // Plugin Config #########################################################################
 
@@ -37,8 +39,10 @@ kiwi.plugin('nickserv', function(kiwi) {
     var BadPwdString = "^Attenzione, prova di nuovo con una password più sicura.";
     // Bad Email Notify include/language.h:86
     var BadEmailString = "non è un indirizzo e-mail valido.";
-    // Register delay modules/commands/ns_register.cpp:153
-    var RegDelayString = "^E' necessario aver usato questo nick per almeno 30 secondi prima di poterlo registrare.";
+    // Register delay modules/commands/ns_register.cpp:153        
+    var RegDelayString = "necessario aver usato questo nick per almeno 60 secondi prima di poterlo registrare.";
+    
+    var EmailExistString = "L'indirizzo email.*?[\\w.-]+@[\\w.-]+\\.\\w{2,}.*?ha raggiunto il limite di 1 utente\\.";
     // Login success Valid Password Regex modules/commands/ns_identify.cpp:38
     var ValidPwdString = "^Password accettata - adesso sei riconosciuto.";
     // Already identified modules/commands/ns_identify.cpp:87 modules/commands/os_login.cpp:34
@@ -54,6 +58,7 @@ kiwi.plugin('nickserv', function(kiwi) {
     var BadPwdRe = new RegExp(BadPwdString ,"");
     var BadEmailRe = new RegExp(BadEmailString ,"");
     var RegDelayRe = new RegExp(RegDelayString ,"");
+    var EmailExistRe = new RegExp(EmailExistString, "i");
     var ValidPwdRe = new RegExp(ValidPwdString ,"");
     var AlreadyIdRe = new RegExp(AlreadyIdString ,"");
 
@@ -65,7 +70,7 @@ kiwi.plugin('nickserv', function(kiwi) {
     });
 
     function registerFn() {
-         kiwi.state.$emit('mediaviewer.show', {component: nsregisterdialog });
+        kiwi.state.$emit('mediaviewer.show', {component: nsregisterdialog });
     }
 
     function logoutFn() {
@@ -76,27 +81,49 @@ kiwi.plugin('nickserv', function(kiwi) {
          kiwi.state.$emit('mediaviewer.show', {component: nslogindialog });
     }
 
+    function selfUserFn() {
+        kiwi.state.$emit('userbox.show', kiwi.state.getActiveNetwork().currentUser());
+    }
+
     var loginBtn = document.createElement('a');
     loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-sign-in"></i><span>Login</span>';
     loginBtn.addEventListener("click", loginFn);
     kiwi.addUi('header_channel', loginBtn);
 
+
+    kiwi.on('irc.registered', (event, network) => (kiwi.Vue.nextTick(() => {
+        const user = network.currentUser();
+        user.nicknameTimestamp = Date.now();
+    //user['timestamp'] = Date.now();
+    })));
+
+    kiwi.on('irc.nick', (event) => {
+        //console.log(event);
+        let network = kiwi.state.getActiveNetwork();
+        let user = network.currentUser();
+
+        if (user.nick === event.nick) {
+            user['nicknameTimestamp'] = Date.now();
+            //console.log(user);
+        }
+    });
+
     kiwi.on('irc.raw.900', function(command, event, network){
-                loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-sign-out"></i><span>Logout</span>';
+                loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-user"></i><span>Account</span>';
                 loginBtn.removeEventListener("click", loginFn);
-                loginBtn.addEventListener("click", logoutFn);
+                loginBtn.addEventListener("click", selfUserFn);
     });
 
     kiwi.on('irc.account', function(event, network) {
         if (event.nick == network.nick) {
             if (event.account == false ) {
                 loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-sign-in"></i><span>Login</span>';
-                loginBtn.removeEventListener("click", logoutFn);
+                loginBtn.removeEventListener("click", selfUserFn);
                 loginBtn.addEventListener("click", loginFn);
             } else {
-                loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-sign-out"></i><span>Logout</span>';
+                loginBtn.innerHTML = '<i aria-hidden="true" class="fa fa-user"></i><span>Account</span>';
                 loginBtn.removeEventListener("click", loginFn);
-                loginBtn.addEventListener("click", logoutFn);
+                loginBtn.addEventListener("click", selfUserFn);
             }
         }
     });
@@ -106,20 +133,56 @@ kiwi.plugin('nickserv', function(kiwi) {
         let preMessage = '';
         let postMessage = '';
         let action = '';
-
-        if (event.params[1].substring(0,1) == '#') {
+        let closeBuffer = true;
+        let autoOpen = true;
+        if (/join/i.test(event.params[2])) {
             preMessage = 'L\' accesso al canale ';
             postMessage = 'è riservato agli utenti registrati';
-            action = 'per accedere';           
-        } else {
-            preMessage = '';
-            postMessage = 'accetta messaggi solo da utenti registrati';
-            action = 'per continuare';
-        }
+            action = 'per accedere';
+            closeBuffer = true;
+            autoOpen = true;
 
-        kiwi.state.$emit('mediaviewer.show', {component: nslogindialog, componentProps: { preMessage: preMessage, channel : event.params[1], join : event.params[1], postMessage : postMessage, action: action }});
-        event.handled = true;
-        return;
+        } else {
+
+            if (event.params[1].substring(0,1) == '#') {
+                preMessage = 'Il canale ';
+                postMessage = 'è moderato, registrati';
+                action = 'per scrivere nella chat pubblica';
+                closeBuffer = false;
+                autoOpen = false;
+            } else {
+                preMessage = '';
+                postMessage = 'accetta messaggi solo da utenti registrati';
+                action = 'per continuare';
+                closeBuffer = true;
+                autoOpen = true;
+            }
+        }
+        
+        if (!autoOpen) {
+            const Component = kiwi.Vue.extend(errorMessage);
+            const errorMessageComponent = new Component({ propsData: { message: "ⓘ L' invio dei messaggi nella chat pubblica è limitato ai soli utenti registrati." } });
+    
+            errorMessageComponent.$mount();
+    
+            let message = {
+                time: Date.now(),
+                nick: 'NickServ',
+                message: 'message',
+                type: 'notice',
+                tags: event.tags || {},
+                bodyTemplate: errorMessageComponent,
+            };
+    
+            kiwi.state.addMessage(kiwi.state.getActiveBuffer(), message);
+            event.handled = true;
+            return;       
+        } else {
+            
+            kiwi.state.$emit('mediaviewer.show', {component: nslogindialog, componentProps: { preMessage: preMessage, channel : event.params[1], join : event.params[1], postMessage : postMessage, action: action, closeBuffer: closeBuffer }});
+            event.handled = true;
+            return;
+        }
 
     });
 
@@ -129,7 +192,8 @@ kiwi.plugin('nickserv', function(kiwi) {
             let postMessage = '';
             let action = 'per creare ';
             let channel = '';
-            kiwi.state.$emit('mediaviewer.show', {component: nslogindialog, componentProps: { preMessage: preMessage, channel : channel, join : event.params[1], postMessage : postMessage, action: action }});
+            closeBuffer = true;
+            kiwi.state.$emit('mediaviewer.show', {component: nslogindialog, componentProps: { preMessage: preMessage, channel : channel, join : event.params[1], postMessage : postMessage, action: action, closeBuffer: closeBuffer }});
             event.handled = true;
             return;
         }
@@ -147,60 +211,114 @@ kiwi.plugin('nickserv', function(kiwi) {
 
     }); */
 
-    kiwi.on('irc.notice', function(event) {
+    kiwi.on('irc.message', function(event) {
+
+        if (event.type !== 'notice') { return; }
 
         if (event.nick.toLowerCase() !== 'nickserv') { return; }
 
         if (event.message.match(IDRe)) {
                 kiwi.state.$emit('mediaviewer.show', {component: nsdialog })
                 return;
-            }
+        }
         if (event.message.match(WPRe)) {
                 var el = document.getElementById("validate")
                 el.innerHTML = WPText ;
                 return;
-            }
+        }
         if (event.message.match(ConfirmReqRe)) {
                 kiwi.state.$emit('mediaviewer.show', {component: confirmdialog })
                 return;
-            }
+        }
 
         if (event.message.match(InvalidConfirmRe)) {
                 var el = document.getElementById("validate")
                 el.innerHTML = InvalidConfirmText ;
                 return;
-            }
+        }
 
         if (event.message.match(ENRe)) {
                 kiwi.state.$emit('mediaviewer.hide')
                 return;
-            }
+        }
 
         if (event.message.match(ValidConfirmRe)) {
                 kiwi.state.$emit('mediaviewer.hide')
                 return;
-            }
+        }
 
         if (event.message.match(BadPwdRe)) {
                 var el = document.getElementById("validate")
                 el.innerHTML = BPText ;
                 return;
-            }
+        }
+
+        if (EmailExistRe.test(event.message)) {
+            
+                var originalMessage = event.message;
+
+                // Rimuovi i caratteri Unicode invisibili
+                var cleanedMessage = originalMessage.replace(/[\u0000-\u001F]/g, '');
+
+                var el = document.getElementById("validate")
+                el.innerHTML = cleanedMessage ;
+                //console.log(event.message);
+                return;
+        }
 
         if (event.message.match(BadEmailRe)) {
                 var el = document.getElementById("validate")
                 el.innerHTML = event.message ;
                 return;
-            }
+        }
 
         if (event.message.match(RegDelayRe)) {
+
                 var el = document.getElementById("validate");
+                let str = event.message;
+
+                let match = str.match(/(\d+)\s+secondi/);
+                let seconds = 0;
+                if (match) {
+                    seconds = parseInt(match[1], 10);
+                    console.log(seconds); // Output: 60
+                }
+                let network = kiwi.state.getActiveNetwork();
+                let user = network.currentUser();
+
+                let timeleft = Math.round((Date.now() - user.nicknameTimestamp) / 1000);
+
+                console.log('Secondi mancanti', seconds - timeleft);
+                let remainingTime =  (seconds - timeleft);
                 el.innerHTML = event.message ;
+                //console.log(event);
+
+                let messageBody = TextFormatting.formatText('notice', {
+                    nick: 'NickServ',
+                    username: 'services',
+                    host: 'services.simosnap.com',
+                    text: event.message + ' Attendi ancora ' + remainingTime + ' secondi',
+                });
+
+
+                let message = {
+                    time: event.time,
+                    server_time: event.time,
+                    nick: "NickServ",
+                    message: messageBody,
+                    type: 'notice',
+                    tags: event.tags || {},
+                };
+
+                kiwi.state.addMessage(kiwi.state.getActiveBuffer() , message);
+
                 setTimeout(function() {
                     kiwi.state.$emit('mediaviewer.hide');
                 }, 2000);
+                event.handled = true;
                 return;
-            }
+        }
+        
         if (event.message.match(ValidPwdRe)) {
                 var el = document.getElementById("validate");
                 el.innerHTML = event.message ;
@@ -208,7 +326,7 @@ kiwi.plugin('nickserv', function(kiwi) {
                     kiwi.state.$emit('mediaviewer.hide');
                 }, 2000);
                 return;
-            }
+        }
 
         if (event.message.match(AlreadyIdRe)) {
                 var el = document.getElementById("validate");
@@ -217,8 +335,8 @@ kiwi.plugin('nickserv', function(kiwi) {
                     kiwi.state.$emit('mediaviewer.hide');
                 }, 2000);
                 return;
-            }
-         });
+        }
+    });
 
     kiwi.on('input.command.nick', function(event) {
         kiwi.state.$emit('mediaviewer.hide')

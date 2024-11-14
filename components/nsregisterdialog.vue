@@ -50,6 +50,8 @@
         },
         methods: {
             onRegister: function () {
+				if (!this.pwdInput) { alert("Tutti i campi sono obbligatori"); return; }
+				if (!this.accountInput) { alert("Tutti i campi sono obbligatori"); return;}
                 kiwi.state.$emit('input.raw', '/NS register '+ this.pwdInput + ' ' + this.accountInput )
             },
             goLogin: function () {

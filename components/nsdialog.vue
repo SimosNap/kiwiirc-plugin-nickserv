@@ -39,7 +39,8 @@
 
         methods: {
           onIdentify: function () {
-            kiwi.state.$emit('input.raw', '/NS identify '+ this.pwdInput )
+				if (!this.pwdInput) { alert("Tutti i campi sono obbligatori"); return; }
+				kiwi.state.$emit('input.raw', '/NS identify '+ this.pwdInput )
             }
         },
     };

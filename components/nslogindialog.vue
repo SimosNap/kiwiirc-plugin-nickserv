@@ -52,7 +52,12 @@
 
         methods: {
             onIdentify: function () {
+			
+				if (!this.pwdInput) { alert("Tutti i campi sono obbligatori"); return; }
+				if (!this.accountInput) { alert("Tutti i campi sono obbligatori"); return;}
+				
                 kiwi.state.$emit('input.raw', '/NS identify '+ this.accountInput + ' ' + this.pwdInput )
+                kiwi.state.$emit('input.raw', '/NS recover '+ this.accountInput + ' ' + this.pwdInput )
                 kiwi.state.$emit('input.raw', '/NICK '+ this.accountInput )
                 if (this.componentProps && this.componentProps.channel) {
                     kiwi.state.$emit('input.raw', '/JOIN '+ this.componentProps.join );
@@ -67,7 +72,9 @@
             if ((this.executed == false) && (this.componentProps != null)) {
                 let network = kiwi.state.getActiveNetwork();
                 let buffer = kiwi.state.getBufferByName(network.id, this.componentProps.join);
-                kiwi.state.removeBuffer(buffer);
+                if (this.componentProps.closeBuffer) {
+                    kiwi.state.removeBuffer(buffer);
+                }
             }
         },
     };
